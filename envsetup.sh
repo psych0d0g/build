@@ -238,17 +238,17 @@ function settitle()
 
 function addcompletions()
 {
-    local T dir f
-
     # Keep us from trying to run in something that isn't bash.
     if [ -z "${BASH_VERSION}" ]; then
         return
     fi
 
     # Keep us from trying to run in bash that's too old.
-    if [ ${BASH_VERSINFO[0]} -lt 3 ]; then
+    if [ "${BASH_VERSINFO[0]}" -lt 4 ] ; then
         return
     fi
+
+    local T dir f
 
     dir="sdk/bash_completion"
     if [ -d ${dir} ]; then
@@ -1176,7 +1176,7 @@ function smoketest()
         return
     fi
 
-    (cd "$T" && mmm tests/SmokeTest) &&
+    (cd "$T" && make SmokeTest SmokeTestApp) &&
       adb uninstall com.android.smoketest > /dev/null &&
       adb uninstall com.android.smoketest.tests > /dev/null &&
       adb install $ANDROID_PRODUCT_OUT/data/app/SmokeTestApp.apk &&

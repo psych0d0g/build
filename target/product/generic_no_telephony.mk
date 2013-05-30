@@ -26,6 +26,7 @@ PRODUCT_PACKAGES := \
     Calendar \
     CertInstaller \
     DrmProvider \
+    Email \
     Email2 \
     Exchange \
     Exchange2 \
@@ -33,7 +34,7 @@ PRODUCT_PACKAGES := \
     Gallery2 \
     InputDevices \
     LatinIME \
-    Trebuchet \
+    MusicFX \
     Provision \
     Phone \
     Settings \
