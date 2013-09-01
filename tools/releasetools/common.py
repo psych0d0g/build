@@ -181,25 +181,29 @@ def LoadRecoveryFSTab(zip, fstab_version):
     print "Warning: could not find RECOVERY/RAMDISK/etc/recovery.fstab in %s." % zip
     data = ""
 
-  d = {}
-  for line in data.split("\n"):
-    line = line.strip()
-    if not line or line.startswith("#"): continue
-    pieces = line.split()
-    if not (3 <= len(pieces) <= 7):
-      raise ValueError("malformed recovery.fstab line: \"%s\"" % (line,))
+  if fstab_version == 1:
+    d = {}
+    for line in data.split("\n"):
+      line = line.strip()
+      if not line or line.startswith("#"): continue
+      pieces = line.split()
+      if not (3 <= len(pieces) <= 4):
+        raise ValueError("malformed recovery.fstab line: \"%s\"" % (line,))
 
-    p = Partition()
-    p.mount_point = pieces[0]
-    p.fs_type = pieces[1]
-    p.device = pieces[2]
-    p.length = 0
-    options = None
-    if len(pieces) >= 4 and pieces[3] != 'NULL':
-      if pieces[3].startswith("/"):
-        p.device2 = pieces[3]
-        if len(pieces) >= 5:
-          options = pieces[4]
+      p = Partition()
+      p.mount_point = pieces[0]
+      p.fs_type = pieces[1]
+      p.device = pieces[2]
+      p.length = 0
+      options = None
+      if len(pieces) >= 4:
+        if pieces[3].startswith("/"):
+          p.device2 = pieces[3]
+          if len(pieces) >= 5:
+            options = pieces[4]
+        else:
+          p.device2 = None
+          options = pieces[3]
       else:
         p.device2 = None
 
@@ -339,7 +343,13 @@ def GetBootableImage(name, prebuilt_name, unpack_dir, tree_subdir,
   'prebuilt_name', otherwise construct it from the source files in
   'unpack_dir'/'tree_subdir'."""
 
-  prebuilt_path = os.path.join(unpack_dir, "BOOTABLE_IMAGES", prebuilt_name)
+  prebuilt_dir = os.path.join(unpack_dir, "BOOTABLE_IMAGES")
+  prebuilt_path = os.path.join(prebuilt_dir, prebuilt_name)
+  custom_bootimg_mk = os.getenv('MKBOOTIMG')
+  if custom_bootimg_mk:
+    bootimage_path = os.path.join(os.getenv('OUT'), "boot.img")
+    os.mkdir(prebuilt_dir)
+    shutil.copyfile(bootimage_path, prebuilt_path)
   if os.path.exists(prebuilt_path):
     print "using prebuilt %s..." % (prebuilt_name,)
     return File.FromLocalFile(name, prebuilt_path)
@@ -457,14 +467,9 @@ def SignFile(input_name, output_name, key, password, align=None,
   else:
     sign_name = output_name
 
-  check = (sys.maxsize > 2**32)
-  if check is True:
-    cmd = ["java", "-Xmx2048m", "-jar",
-           os.path.join(OPTIONS.search_path, "framework", "signapk.jar")]
-  else:
-    cmd = ["java", "-Xmx1024m", "-jar",
-           os.path.join(OPTIONS.search_path, "framework", "signapk.jar")]
-
+  cmd = [OPTIONS.java_path, "-Xmx2048m", "-jar",
+         os.path.join(OPTIONS.search_path, OPTIONS.signapk_path)]
+  cmd.extend(OPTIONS.extra_signapk_args)
   if whole_file:
     cmd.append("-w")
   cmd.extend([key + OPTIONS.public_key_suffix,
