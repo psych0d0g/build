@@ -27,8 +27,6 @@ PRODUCT_PACKAGES := \
     CertInstaller \
     DrmProvider \
     Email \
-    Email2 \
-    Exchange \
     Exchange2 \
     FusedLocation \
     Gallery2 \
@@ -38,6 +36,7 @@ PRODUCT_PACKAGES := \
     OneTimeInitializer \
     Provision \
     Phone \
+    QuickSearchBox \
     Settings \
     SystemUI \
     CalendarProvider \
