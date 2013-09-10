@@ -42,10 +42,6 @@ PRODUCT_PACKAGES += \
     libbcc \
     libfilterpack_imageproc \
     libgabi++ \
-    libanalogradiobroadcasting \
-    libicui18n \
-    libicuuc \
-    libjavacore \
     libkeystore \
     libmdnssd \
     libnfc_ndef \

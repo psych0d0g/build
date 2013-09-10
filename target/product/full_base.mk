@@ -24,14 +24,6 @@ PRODUCT_PACKAGES := \
     VideoEditor \
     WAPPushManager
 
-
-PRODUCT_PACKAGES += \
-    libvideoeditor_jni \
-    libvideoeditor_core \
-    libvideoeditor_osal \
-    libvideoeditor_videofilters \
-    libvideoeditorplayer
-
 PRODUCT_PACKAGES += \
     Galaxy4 \
     HoloSpiralWallpaper \
@@ -43,6 +35,12 @@ PRODUCT_PACKAGES += \
     VisualizationWallpapers \
     PhotoTable
 
+PRODUCT_PACKAGES += \
+    libvideoeditor_jni \
+    libvideoeditor_core \
+    libvideoeditor_osal \
+    libvideoeditor_videofilters \
+    libvideoeditorplayer
 
 # Additional settings used in all AOSP builds
 PRODUCT_PROPERTY_OVERRIDES := \
